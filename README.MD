@@ -19,3 +19,5 @@ git submodule add https://github.com/Hyperlensed/buis-ui-system.git addons/Hyper
 | List Insertion Strategy                       | ❌        | ✅      |
 | List Extraction Strategy                      | ❌        | ✅      |
 | Screen Space Positioning Based On World Space | ❌        | ✅      |
+
+Copyright (c) 2025 Hyperlensed
