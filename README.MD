@@ -1,12 +1,12 @@
-# Buis UI
+# Buis System
 
-A Godot plugin that enables dynamic and responsive UI creation through reactive data binding and a component-based architecture.
+A Godot plugin that enables dynamic component instanciation through reactive data binding and a component-based architecture.
 
 ## Install
 
 To install the addon run this command with git installed in the root directory of your godot project.
 ```bash
-git submodule add https://github.com/Hyperlensed/buis-ui-system.git addons/Hyperlensed/buis-ui-system
+git submodule add https://github.com/Hyperlensed/buis-system.git addons/Hyperlensed/buis-system
 ```
 
 ## Support Table
