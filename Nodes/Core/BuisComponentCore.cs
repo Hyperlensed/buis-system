@@ -1,8 +1,48 @@
 using Godot;
 
-namespace BuisUISystem.Nodes.Core {
+using System;
+using System.Collections.Generic;
+
+namespace BuisSystem.Nodes.Core {
 	public class BuisComponentCore {
-		public WeakRef ParentComponentReference { get; private set; } = null;
+		private WeakRef _parentComponentAsWeakRef = null;
+		public IBuisComponent ParentComponent {
+			get {
+				try {
+					if (_parentComponentAsWeakRef == null) {
+						return null;
+					}
+
+					Variant parentComponentRef = _parentComponentAsWeakRef
+						.GetRef();
+
+					if (parentComponentRef.VariantType == Variant.Type.Nil) {
+						_parentComponentAsWeakRef = null;
+						return null;
+					}
+
+					Node parentComponent = parentComponentRef.As<Node>();
+					if (parentComponent == null || !GodotObject.IsInstanceValid(parentComponent)) {
+						_parentComponentAsWeakRef = null;
+						return null;
+					}
+					
+					if (!typeof(IBuisComponent).IsAssignableFrom(parentComponent.GetType())) {
+						GD.PushError("Stored ParentComponentAsWeakRef is not assignable to an IBuisComponent.");
+
+						_parentComponentAsWeakRef = null;
+						return null;
+					}
+
+					return parentComponent as IBuisComponent;
+				} catch(Exception e) {
+					GD.PushError("Unknown ParentComponent Getter Error ", e.ToString());
+					return null;
+				}
+			}
+		}
+
+		private List<WeakRef> ChildrenComponentReference = new List<WeakRef>();
 
 		private int _lastParentOrSceneTreeRelatedNotification = -1;
 		public void OnNotification(Node self, int what) {
@@ -11,38 +51,37 @@ namespace BuisUISystem.Nodes.Core {
 					_lastParentOrSceneTreeRelatedNotification = -1;
 					break;
 				}
-				case Node.NotificationParented: {
-					UpdateParentComponent(self);
 
-					_lastParentOrSceneTreeRelatedNotification = what;
-					break;
-				}
-				case Node.NotificationUnparented: {
-					if (_lastParentOrSceneTreeRelatedNotification != Node.NotificationExitTree) {
-						UpdateParentComponent(self);
-					}
-
-					_lastParentOrSceneTreeRelatedNotification = what;
-					break;
-				}
-				case Node.NotificationEnterTree: {
-					if (_lastParentOrSceneTreeRelatedNotification != Node.NotificationParented) {
-						UpdateParentComponent(self);
-					}
-					
-					_lastParentOrSceneTreeRelatedNotification = what;
-					break;
-				}
+				case Node.NotificationParented:
+				case Node.NotificationUnparented:
+				case Node.NotificationEnterTree:
 				case Node.NotificationExitTree: {
+					int lastRelatedNotification = _lastParentOrSceneTreeRelatedNotification;
+					_lastParentOrSceneTreeRelatedNotification = what;
+
+					if (
+						what == Node.NotificationUnparented
+						&& lastRelatedNotification == Node.NotificationExitTree
+					) {
+						return;
+					}
+
+					if (
+						what == Node.NotificationEnterTree
+						&& lastRelatedNotification == Node.NotificationParented
+					) {
+						return;
+					}
+
 					UpdateParentComponent(self);
 
-					_lastParentOrSceneTreeRelatedNotification = what;
 					break;
 				}
 			}
 		}
 
 		private void UpdateParentComponent(Node self) {
+			// Update parent reference
 			if (self == null || !GodotObject.IsInstanceValid(self)) {
 				return;
 			}
@@ -51,7 +90,7 @@ namespace BuisUISystem.Nodes.Core {
 			Node parentNode = self.GetParentOrNull<Node>();
 			while (parentNode != null && GodotObject.IsInstanceValid(parentNode)) {
 				if (typeof(IBuisComponent).IsAssignableFrom(parentNode.GetType())) {
-					ParentComponentReference = GodotObject.WeakRef(parentNode);
+					_parentComponentAsWeakRef = GodotObject.WeakRef(parentNode);
 					parentComponentReferenceUpdated = true;
 
 					break;
@@ -61,16 +100,12 @@ namespace BuisUISystem.Nodes.Core {
 			}
 
 			if (!parentComponentReferenceUpdated) {
-				ParentComponentReference = null;
+				_parentComponentAsWeakRef = null;
 			}
 
-			UpdateComponent(self);
-		}
-
-		private void UpdateComponent(Node self) {
 			if (typeof(IBuisComponent).IsAssignableFrom(self.GetType())) {
 				IBuisComponent selfAsIBuisComponent = self as IBuisComponent;
-				selfAsIBuisComponent.Update();
+				//selfAsIBuisComponent.Update();
 			}
 		}
 	}

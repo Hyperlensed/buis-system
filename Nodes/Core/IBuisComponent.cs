@@ -1,9 +1,7 @@
 using Godot;
 
-namespace BuisUISystem.Nodes.Core {
+namespace BuisSystem.Nodes.Core {
 	public interface IBuisComponent {
-		public WeakRef ParentComponent { get; }
-		
-		public void Update();
+		public IBuisComponent ParentComponent { get; }
 	}
 }
