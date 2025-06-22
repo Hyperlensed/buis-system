@@ -47,11 +47,14 @@ namespace BuisSystem {
 			AddCustomType("BuisList (Node3D)", "Node3D", buisListScript, buisListNode3DIcon);
 			AddCustomType("BuisList (Control)", "Control", buisListScript, buisListControlIcon);
 
-			// Buis List Insertion Carret
-			Script buisListInsertionCarretScript = GD.Load<Script>(
-				((Resource)GetScript()).ResourcePath.GetBaseDir() + "/Nodes/Logic/List/InsertionCarret/BuisListInsertionCarret.cs"
+			// Buis List Insertion Marker
+			Script buisListInsertionMarkerScript = GD.Load<Script>(
+				((Resource)GetScript()).ResourcePath.GetBaseDir() + "/Nodes/Logic/List/InsertionMarker/BuisListInsertionMarker.cs"
 			);
-			AddCustomType("BuisListInsertionCarret", "Node", buisListInsertionCarretScript, null);
+			Texture2D buisListInsertionMarkerIcon = GD.Load<Texture2D>(
+				((Resource)GetScript()).ResourcePath.GetBaseDir() + "/Nodes/Logic/List/InsertionMarker/BuisListInsertionMarker.svg"
+			);
+			AddCustomType("BuisListInsertionMarker", "Node", buisListInsertionMarkerScript, buisListInsertionMarkerIcon);
 
 			// Value Binder
 			Script buisValueBinderScript = GD.Load<Script>(
@@ -68,7 +71,7 @@ namespace BuisSystem {
 			RemoveCustomType("BuisList (Node3D)");
 			RemoveCustomType("BuisList (Control)");
 
-			RemoveCustomType("BuisListInsertionCarret");
+			RemoveCustomType("BuisListInsertionMarker");
 
 			RemoveCustomType("BuisValueBinder");
         }

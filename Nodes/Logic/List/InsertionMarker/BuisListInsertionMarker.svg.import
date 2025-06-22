@@ -2,17 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bvfmlfbnxmrnn"
-path="res://.godot/imported/BuisListNode2D.svg-9bb801a85892b9f22af675939482b920.ctex"
+uid="uid://c8i4e4id3xbtv"
+path="res://.godot/imported/BuisListInsertionMarker.svg-d93744c4b4fe901dee78e419c2dccbca.ctex"
 metadata={
-"has_editor_variant": true,
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/Hyperlensed/buis-system/Nodes/Logic/List/BuisListNode2D.svg"
-dest_files=["res://.godot/imported/BuisListNode2D.svg-9bb801a85892b9f22af675939482b920.ctex"]
+source_file="res://addons/Hyperlensed/buis-system/Nodes/Logic/List/InsertionMarker/BuisListInsertionMarker.svg"
+dest_files=["res://.godot/imported/BuisListInsertionMarker.svg-d93744c4b4fe901dee78e419c2dccbca.ctex"]
 
 [params]
 
@@ -34,5 +33,5 @@ process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
 svg/scale=1.0
-editor/scale_with_editor_scale=true
+editor/scale_with_editor_scale=false
 editor/convert_colors_with_editor_theme=false

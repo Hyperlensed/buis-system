@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bp4pf3k354f5g"
-path="res://.godot/imported/PreviewImage.svg-62ff1ea8ec4e52a121a8655a98a9e7d7.ctex"
+path="res://.godot/imported/PreviewImage.svg-4cbe191ee7253eb6dc618ee2ea95c34f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/Hyperlensed/buis-ui-system/Preview/PreviewImage.svg"
-dest_files=["res://.godot/imported/PreviewImage.svg-62ff1ea8ec4e52a121a8655a98a9e7d7.ctex"]
+source_file="res://addons/Hyperlensed/buis-system/Preview/PreviewImage.svg"
+dest_files=["res://.godot/imported/PreviewImage.svg-4cbe191ee7253eb6dc618ee2ea95c34f.ctex"]
 
 [params]
 
