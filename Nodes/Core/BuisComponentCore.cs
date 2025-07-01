@@ -3,49 +3,22 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
+using BuisSystem.Core;
+
 namespace BuisSystem.Nodes.Core {
-	public class BuisComponentCore {
-		private WeakRef _parentComponentAsWeakRef = null;
-		public IBuisComponent ParentComponent {
-			get {
-				try {
-					if (_parentComponentAsWeakRef == null) {
-						return null;
-					}
-
-					Variant parentComponentRef = _parentComponentAsWeakRef
-						.GetRef();
-
-					if (parentComponentRef.VariantType == Variant.Type.Nil) {
-						_parentComponentAsWeakRef = null;
-						return null;
-					}
-
-					Node parentComponent = parentComponentRef.As<Node>();
-					if (parentComponent == null || !GodotObject.IsInstanceValid(parentComponent)) {
-						_parentComponentAsWeakRef = null;
-						return null;
-					}
-					
-					if (!typeof(IBuisComponent).IsAssignableFrom(parentComponent.GetType())) {
-						GD.PushError("Stored ParentComponentAsWeakRef is not assignable to an IBuisComponent.");
-
-						_parentComponentAsWeakRef = null;
-						return null;
-					}
-
-					return parentComponent as IBuisComponent;
-				} catch(Exception e) {
-					GD.PushError("Unknown ParentComponent Getter Error ", e.ToString());
-					return null;
-				}
-			}
-		}
-
-		private List<WeakRef> ChildrenComponentReference = new List<WeakRef>();
+	public partial class BuisComponentCore {
+		public readonly GodotNodeWeakRefWrapper<IBuisComponent> ParentComponent = new GodotNodeWeakRefWrapper<IBuisComponent>();
+		
+		private readonly List<GodotNodeWeakRefWrapper<IBuisComponent>> _childrenComponents = new List<GodotNodeWeakRefWrapper<IBuisComponent>>();
+		public IEnumerable<GodotNodeWeakRefWrapper<IBuisComponent>> ChildrenComponents => _childrenComponents;
 
 		private int _lastParentOrSceneTreeRelatedNotification = -1;
-		public void OnNotification(Node self, int what) {
+		public void OnNotification(Node self, IBuisComponent selfAsComponent, int what) {
+			if (self == null || !GodotObject.IsInstanceValid(self)) {
+				GD.PrintErr("BuisComponentCore: The provided node is Null or Invalid.");
+				return;
+			}
+
 			switch ((long)what) {
 				case Node.NotificationProcess: {
 					_lastParentOrSceneTreeRelatedNotification = -1;
@@ -73,40 +46,31 @@ namespace BuisSystem.Nodes.Core {
 						return;
 					}
 
-					UpdateParentComponent(self);
+					Update(self);
 
 					break;
 				}
 			}
 		}
 
-		private void UpdateParentComponent(Node self) {
-			// Update parent reference
-			if (self == null || !GodotObject.IsInstanceValid(self)) {
-				return;
-			}
+		private void Update(Node self) {
+			UpdateParent(self);
+			UpdatePropertyReceptorsProperties();
+		}
 
-			bool parentComponentReferenceUpdated = false;
+		private void UpdateParent(Node self) {
 			Node parentNode = self.GetParentOrNull<Node>();
-			while (parentNode != null && GodotObject.IsInstanceValid(parentNode)) {
-				if (typeof(IBuisComponent).IsAssignableFrom(parentNode.GetType())) {
-					_parentComponentAsWeakRef = GodotObject.WeakRef(parentNode);
-					parentComponentReferenceUpdated = true;
-
-					break;
+			while (!ParentComponent.TrySetValueAsNode(parentNode, out var result, true)) {
+				if (result == GodotNodeWeakRefWrapper.TrySetValueAsNodeResult.InvalidNode) {
+					return;
 				}
 
 				parentNode = parentNode.GetParentOrNull<Node>();
 			}
+		}
 
-			if (!parentComponentReferenceUpdated) {
-				_parentComponentAsWeakRef = null;
-			}
-
-			if (typeof(IBuisComponent).IsAssignableFrom(self.GetType())) {
-				IBuisComponent selfAsIBuisComponent = self as IBuisComponent;
-				//selfAsIBuisComponent.Update();
-			}
+		private void UpdatePropertyReceptorsProperties() {
+			
 		}
 	}
 }
