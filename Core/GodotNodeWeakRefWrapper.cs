@@ -4,6 +4,21 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 
 namespace BuisSystem.Core {
+	public static class GodotNodeWeakRefWrapper {
+		public enum TrySetValueResult {
+			Success,
+			InvalidNode,
+			NotAssignableToNodeType,
+			UnknownError
+		}
+		public enum TrySetValueAsNodeResult {
+			Success,
+			InvalidNode,
+			NotAssignableToProvidedType,
+			UnknownError
+		}
+	}
+	
 	public class GodotNodeWeakRefWrapper<T>
 		where T : class
 	{
@@ -11,21 +26,15 @@ namespace BuisSystem.Core {
 
 #region Set
 
-		public enum TrySetValueResult {
-			Success,
-			InvalidNode,
-			NotAssignableToNodeType,
-			UnknownError
-		}
 		public bool TrySetValue(T newValue, bool defaultToNull = false) {
 			return TrySetValue(newValue, out _, defaultToNull);
 		}
-		public bool TrySetValue(T newValue, out TrySetValueResult result, bool defaultToNull = false) {
+		public bool TrySetValue(T newValue, out GodotNodeWeakRefWrapper.TrySetValueResult result, bool defaultToNull = false) {
 			try {
 				if (newValue == null) {
 					_valueWeakRef = null;
 
-					result = TrySetValueResult.Success;
+					result = GodotNodeWeakRefWrapper.TrySetValueResult.Success;
 					return true;
 				}
 
@@ -34,7 +43,7 @@ namespace BuisSystem.Core {
 						_valueWeakRef = null;
 					}
 
-					result = TrySetValueResult.NotAssignableToNodeType;
+					result = GodotNodeWeakRefWrapper.TrySetValueResult.NotAssignableToNodeType;
 					return false;
 				}
 
@@ -45,13 +54,13 @@ namespace BuisSystem.Core {
 						_valueWeakRef = null;
 					}
 
-					result = TrySetValueResult.InvalidNode;
+					result = GodotNodeWeakRefWrapper.TrySetValueResult.InvalidNode;
 					return false;
 				}
 
 				_valueWeakRef = GodotObject.WeakRef(newValueAsNode);
 
-				result = TrySetValueResult.Success;
+				result = GodotNodeWeakRefWrapper.TrySetValueResult.Success;
 				return true;
 			} catch (Exception exception) {
 				if (defaultToNull) {
@@ -60,26 +69,20 @@ namespace BuisSystem.Core {
 
 				GD.PrintErr("GodotWeakRefWrapper: Unknown Exception\n", exception.ToString());
 
-				result = TrySetValueResult.UnknownError;
+				result = GodotNodeWeakRefWrapper.TrySetValueResult.UnknownError;
 				return false;
 			}
 		}
 
-		public enum TrySetValueAsNodeResult {
-			Success,
-			InvalidNode,
-			NotAssignableToProvidedType,
-			UnknownError
-		}
 		public bool TrySetValueAsNode(Node newValue, bool defaultToNull = false) {
 			return TrySetValueAsNode(newValue, out _, defaultToNull);
 		}
-		public bool TrySetValueAsNode(Node newValue, out TrySetValueAsNodeResult result, bool defaultToNull = false) {
+		public bool TrySetValueAsNode(Node newValue, out GodotNodeWeakRefWrapper.TrySetValueAsNodeResult result, bool defaultToNull = false) {
 			try {
 				if (newValue == null) {
 					_valueWeakRef = null;
 
-					result = TrySetValueAsNodeResult.Success;
+					result = GodotNodeWeakRefWrapper.TrySetValueAsNodeResult.Success;
 					return true;
 				}
 
@@ -88,7 +91,7 @@ namespace BuisSystem.Core {
 						_valueWeakRef = null;
 					}
 
-					result = TrySetValueAsNodeResult.NotAssignableToProvidedType;
+					result = GodotNodeWeakRefWrapper.TrySetValueAsNodeResult.NotAssignableToProvidedType;
 					return false;
 				}
 
@@ -97,13 +100,13 @@ namespace BuisSystem.Core {
 						_valueWeakRef = null;
 					}
 
-					result = TrySetValueAsNodeResult.InvalidNode;
+					result = GodotNodeWeakRefWrapper.TrySetValueAsNodeResult.InvalidNode;
 					return false;
 				}
 
 				_valueWeakRef = GodotObject.WeakRef(newValue);
 
-				result = TrySetValueAsNodeResult.Success;
+				result = GodotNodeWeakRefWrapper.TrySetValueAsNodeResult.Success;
 				return true;
 			} catch (Exception exception) {
 				if (defaultToNull) {
@@ -112,7 +115,7 @@ namespace BuisSystem.Core {
 
 				GD.PrintErr("GodotWeakRefWrapper: Unknown Exception\n", exception.ToString());
 
-				result = TrySetValueAsNodeResult.UnknownError;
+				result = GodotNodeWeakRefWrapper.TrySetValueAsNodeResult.UnknownError;
 				return false;
 			}
 		}
