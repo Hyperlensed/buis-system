@@ -4,6 +4,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 
 namespace BuisSystem.Core {
+
 	public static class GodotNodeWeakRefWrapper {
 		public enum TrySetValueResult {
 			Success,
@@ -18,8 +19,8 @@ namespace BuisSystem.Core {
 			UnknownError
 		}
 	}
-	
-	public class GodotNodeWeakRefWrapper<T>
+
+	public sealed class GodotNodeWeakRefWrapper<T>
 		where T : class
 	{
 		private WeakRef _valueWeakRef = null;
@@ -122,8 +123,6 @@ namespace BuisSystem.Core {
 
 #endregion
 
-
-
 #region Get
 
 		public bool TryGetValue([MaybeNullWhen(false)][NotNullWhen(true)] out T value) {
@@ -187,6 +186,29 @@ namespace BuisSystem.Core {
 		}
 
 #endregion
+
+		public ReadonlyGodotNodeWeakRefWrapper<T> GetAsReadonly() {
+			return new ReadonlyGodotNodeWeakRefWrapper<T>(this);
+		}
+
+	}
+
+	public sealed class ReadonlyGodotNodeWeakRefWrapper<T>
+		where T : class
+	{
+
+		private readonly GodotNodeWeakRefWrapper<T> _sourceGodotNodeWeakRefWrapper;
+
+		public ReadonlyGodotNodeWeakRefWrapper(GodotNodeWeakRefWrapper<T> sourceGodotNodeWeakRefWrapper) {
+			_sourceGodotNodeWeakRefWrapper = sourceGodotNodeWeakRefWrapper;
+		}
+
+		public bool TryGetValue([MaybeNullWhen(false)][NotNullWhen(true)] out T value) {
+			return _sourceGodotNodeWeakRefWrapper.TryGetValue(out value);
+		}
+		public bool TryGetValueAsNode([MaybeNullWhen(false)][NotNullWhen(true)] out Node value) {
+			return _sourceGodotNodeWeakRefWrapper.TryGetValueAsNode(out value);
+		}
 
 	}
 }
