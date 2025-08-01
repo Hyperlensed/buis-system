@@ -190,13 +190,11 @@ namespace BuisSystem.Core {
 		public ReadonlyGodotNodeWeakRefWrapper<T> GetAsReadonly() {
 			return new ReadonlyGodotNodeWeakRefWrapper<T>(this);
 		}
-
 	}
 
 	public sealed class ReadonlyGodotNodeWeakRefWrapper<T>
 		where T : class
 	{
-
 		private readonly GodotNodeWeakRefWrapper<T> _sourceGodotNodeWeakRefWrapper;
 
 		public ReadonlyGodotNodeWeakRefWrapper(GodotNodeWeakRefWrapper<T> sourceGodotNodeWeakRefWrapper) {
@@ -209,6 +207,5 @@ namespace BuisSystem.Core {
 		public bool TryGetValueAsNode([MaybeNullWhen(false)][NotNullWhen(true)] out Node value) {
 			return _sourceGodotNodeWeakRefWrapper.TryGetValueAsNode(out value);
 		}
-
 	}
 }

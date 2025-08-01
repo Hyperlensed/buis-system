@@ -2,6 +2,6 @@ using BuisSystem.Core;
 
 namespace BuisSystem.Nodes.Core {
 	public interface IBuisComponent {
-		public GodotNodeWeakRefWrapper<IBuisComponent> ParentComponent { get; }
+		public ReadonlyGodotNodeWeakRefWrapper<IBuisComponent> ParentComponent { get; }
 	}
 }
